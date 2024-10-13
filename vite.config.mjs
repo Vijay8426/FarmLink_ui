@@ -4,44 +4,26 @@ import jsconfigPaths from 'vite-jsconfig-paths';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
-  const API_URL = `${env.VITE_APP_BASE_NAME}`;
-  const PORT = env.PORT || '8000';
+  const API_URL = `${env.VITE_APP_BASE_NAME}`; // Make sure this is set correctly in Render
+  const PORT = env.PORT || '3000'; // Use the PORT environment variable or default to 3000
 
   return {
     server: {
-      // this ensures that the browser opens upon server start
       open: true,
-      // this sets a default port to 3000
-      port: PORT
+      port: PORT, // Use the PORT variable assigned by Render
+      host: '0.0.0.0', // Bind to all interfaces
+      strictPort: true, // Fail if the port is already in use
     },
     define: {
-      global: 'window'
+      global: 'window',
     },
     resolve: {
-      alias: [
-        // { find: '', replacement: path.resolve(__dirname, 'src') },
-        // {
-        //   find: /^~(.+)/,
-        //   replacement: path.join(process.cwd(), 'node_modules/$1')
-        // },
-        // {
-        //   find: /^src(.+)/,
-        //   replacement: path.join(process.cwd(), 'src/$1')
-        // }
-        // {
-        //   find: 'assets',
-        //   replacement: path.join(process.cwd(), 'src/assets')
-        // },
-      ]
+      alias: [],
     },
     css: {
       preprocessorOptions: {
-        scss: {
-          charset: false
-        },
-        less: {
-          charset: false
-        }
+        scss: { charset: false },
+        less: { charset: false },
       },
       charset: false,
       postcss: {
@@ -53,13 +35,13 @@ export default defineConfig(({ mode }) => {
                 if (atRule.name === 'charset') {
                   atRule.remove();
                 }
-              }
-            }
-          }
-        ]
-      }
+              },
+            },
+          },
+        ],
+      },
     },
-    base: API_URL,
-    plugins: [react(), jsconfigPaths()]
+    base: API_URL.startsWith('/') ? API_URL : `/${API_URL}`, // Ensure base starts with a slash
+    plugins: [react(), jsconfigPaths()],
   };
 });
