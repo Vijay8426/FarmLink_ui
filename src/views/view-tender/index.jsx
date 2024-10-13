@@ -9,47 +9,41 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 function HeaderAndFooterExample() {
-  // Define a common card style with a fixed width
   const cardStyle = {
-    width: '550px', // Standard width for all cards
-    margin: '0 auto', // Center the card
+    width: '550px',
+    margin: '0 auto',
   };
 
-  // State to hold the tender data
   const [tenders, setTenders] = useState([]);
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true);
 
-  // Fetch tenders from the API
   useEffect(() => {
     const fetchTenders = async () => {
       setLoading(true);
       try {
-        // Get accessToken from localStorage
         const accessToken = localStorage.getItem('accessToken');
 
-        // Axios request with Authorization header
         const response = await axios.get('https://farmlink-ewxs.onrender.com/tender/tender/buyer/', {
           headers: {
-            Authorization: `Bearer ${accessToken}`, // Add token to header
+            Authorization: `Bearer ${accessToken}`,
           },
         });
 
-        setTenders(response.data); // Set the tender data to the state
-        setLoading(false); // Set loading to false after fetching
+        setTenders(response.data);
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching tenders:', error);
-        setLoading(false); // Stop the loader even on error
+        setLoading(false);
       }
     };
 
     fetchTenders();
-    AOS.init(); // Initialize AOS
+    AOS.init();
   }, []);
 
   return (
-    <Row className="justify-content-center"> {/* Center cards horizontally */}
+    <Row className="justify-content-center">
       {loading ? (
-        // Show Bootstrap spinner when data is being loaded
         <div className="d-flex justify-content-center align-items-center" style={{ height: '300px' }}>
           <Spinner animation="border" variant="primary" role="status">
             <span className="sr-only">Loading...</span>
@@ -57,15 +51,23 @@ function HeaderAndFooterExample() {
         </div>
       ) : (
         tenders.length > 0 ? (
-          tenders.map((tender, index) => (
-            <Col xs={12} md={6} className="d-flex justify-content-center mb-3" key={index}>
-              <Card style={cardStyle} data-aos="fade-up"> {/* AOS animation */}
+          tenders.map((tender) => (
+            <Col xs={12} md={6} className="d-flex justify-content-center mb-3" key={tender.id}>
+              <Card style={cardStyle} data-aos="fade-up">
                 <Card.Body>
-                  <Card.Title>{tender.title}</Card.Title> {/* Dynamically display tender title */}
+                  <Card.Title>{tender.title}</Card.Title>
                   <Card.Text>
-                    {tender.description} {/* Dynamically display tender description */}
+                    {tender.description}
                   </Card.Text>
-                  <Button variant="primary">Details</Button>
+                  <Button
+                    variant="primary"
+                    onClick={() => {
+                      // Change the window location to the tender details page
+                      window.location.href = `http://localhost:3000/demos/admin-templates/datta-able/react/free/app/tender-spec/${tender.id}`;
+                    }}
+                  >
+                    Details
+                  </Button>
                 </Card.Body>
               </Card>
             </Col>
