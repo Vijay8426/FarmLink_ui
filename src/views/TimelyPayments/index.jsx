@@ -28,7 +28,7 @@ function TimelyPayments() {
             />
           </div>
           <div className="col-lg-6">
-            <p>
+            <p className='text-dark'>
               Timely payments ensure farmers receive their money promptly after delivering their produce. 
               The system automates payment processes based on contract fulfillment, reducing delays and 
               administrative burden. This feature provides financial stability and predictability for farmers. 

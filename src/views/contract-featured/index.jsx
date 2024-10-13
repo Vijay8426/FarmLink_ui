@@ -28,7 +28,7 @@ function SecureContract() {
             />
           </div>
           <div className="col-lg-6">
-            <p>
+            <p className='text-dark'>
               Secure contracts are digital agreements that are legally binding and protected against tampering. 
               They detail all terms, including quantity, quality, delivery schedules, and prices. By using encryption 
               and blockchain technology, these contracts ensure transparency and trust between farmers and buyers. 

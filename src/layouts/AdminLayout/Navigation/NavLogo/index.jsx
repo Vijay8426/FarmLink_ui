@@ -19,7 +19,7 @@ const NavLogo = () => {
       <div className="navbar-brand header-logo">
         <Link to="#" className="b-brand">
           <div className="b-bg">
-            <i className="feather icon-trending-up" />
+            <i className="feather icon-package" />
           </div>
           <span className="b-title">Farm Link</span>
         </Link>

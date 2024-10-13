@@ -11,12 +11,12 @@ import bannerImage from '../../assets/images-home/hp-banner-mobile.0b0478c0.webp
 import bannerVideo from '../../assets/media/home-video.mp4';
 
 function DashDefault() {
-  const [semi, setsemi] = useState(true);
-  const [system, setsystem] = useState(false);
-  const [technology, settechnology] = useState(false);
-  const semiac = useRef(null);
-  const sysac = useRef(null);
-  const techac = useRef(null);
+  const [contract, setcontract] = useState(true);
+  const [negotiation, setnegotiation] = useState(false);
+  const [Payments, setPayments] = useState(false);
+  const contractac = useRef(null);
+  const negotiateac = useRef(null);
+  const payac = useRef(null);
 
   useEffect(() => {
     AOS.init({
@@ -25,31 +25,31 @@ function DashDefault() {
     });
   }, []);
 
-  const getsemi = () => {
-    setsemi(true);
-    setsystem(false);
-    settechnology(false);
-    semiac.current.classList.add('active');
-    sysac.current.classList.remove('active');
-    techac.current.classList.remove('active');
+  const getcontract = () => {
+    setcontract(true);
+    setnegotiation(false);
+    setPayments(false);
+    contractac.current.classList.add('active');
+    negotiateac.current.classList.remove('active');
+    payac.current.classList.remove('active');
   };
 
-  const getsys = () => {
-    setsemi(false);
-    setsystem(true);
-    settechnology(false);
-    semiac.current.classList.remove('active');
-    sysac.current.classList.add('active');
-    techac.current.classList.remove('active');
+  const getnegotiate = () => {
+    setcontract(false);
+    setnegotiation(true);
+    setPayments(false);
+    contractac.current.classList.remove('active');
+    negotiateac.current.classList.add('active');
+    payac.current.classList.remove('active');
   };
 
-  const gettech = () => {
-    setsemi(false);
-    setsystem(false);
-    settechnology(true);
-    semiac.current.classList.remove('active');
-    sysac.current.classList.remove('active');
-    techac.current.classList.add('active');
+  const getpay = () => {
+    setcontract(false);
+    setnegotiation(false);
+    setPayments(true);
+    contractac.current.classList.remove('active');
+    negotiateac.current.classList.remove('active');
+    payac.current.classList.add('active');
   };
 
   return (
@@ -61,7 +61,7 @@ function DashDefault() {
               <div className="col-lg-6">
                 <div className="vstack">
                   <h1><span>Let’s Cultivate the Future of </span> Agriculture Together</h1>
-                  <p>
+                  <p className='text-dark'>
                     Grow the Future of Farming with Us. Seamless Connections Through Digital Contracts.
                     Fostering Innovation and Trust in Agriculture.
                   </p>
@@ -77,7 +77,7 @@ function DashDefault() {
 
           {/* Use the imported image */}
           <img
-            alt="SenaniTech banner"
+            alt="Senanipay banner"
             fetchPriority="high"
             width="415"
             height="604"
@@ -102,17 +102,17 @@ function DashDefault() {
               <div className="col-xl-6 col-lg-7 col-md-12">
                 <div className="nav nav-pills nav-fill" role="tablist">
                   <div className="nav-item">
-                    <Link role="tab" className="nav-link active" tabIndex="0" ref={semiac} onClick={getsemi}>
+                    <Link role="tab" className="nav-link active" tabIndex="0" ref={contractac} onClick={getcontract}>
                       Secure Contracts
                     </Link>
                   </div>
                   <div className="nav-item">
-                    <Link role="tab" className="nav-link" tabIndex="-1" ref={sysac} onClick={getsys}>
+                    <Link role="tab" className="nav-link" tabIndex="-1" ref={negotiateac} onClick={getnegotiate}>
                       Price Negotiation
                     </Link>
                   </div>
                   <div className="nav-item">
-                    <Link role="tab" className="nav-link" tabIndex="-1" ref={techac} onClick={gettech}>
+                    <Link role="tab" className="nav-link" tabIndex="-1" ref={payac} onClick={getpay}>
                       Timely Payments
                     </Link>
                   </div>
@@ -120,9 +120,9 @@ function DashDefault() {
               </div>
             </div>
             <div className="tab-content">
-              {semi && <SecureContract />}
-              {system && <Negotiation />}
-              {technology && <TimelyPayments />}
+              {contract && <SecureContract />}
+              {negotiation && <Negotiation />}
+              {Payments && <TimelyPayments />}
             </div>
           </div>
         </section>

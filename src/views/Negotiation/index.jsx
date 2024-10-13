@@ -27,7 +27,7 @@ function Negotiation() {
             />
           </div>
           <div className="col-lg-6">
-            <p>
+            <p className='text-dark'>
               Price negotiation allows farmers and buyers to discuss and agree on fair prices before finalizing contracts. 
               The platform provides tools and market data to facilitate transparent discussions. This ensures that pricing 
               reflects current market conditions and benefits both parties. Fair negotiation promotes equitable transactions 
