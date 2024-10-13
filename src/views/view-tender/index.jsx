@@ -63,7 +63,7 @@ function HeaderAndFooterExample() {
                     variant="primary"
                     onClick={() => {
                       // Change the window location to the tender details page
-                      window.location.href = `http://localhost:3000/demos/admin-templates/datta-able/react/free/app/tender-spec/${tender.id}`;
+                      window.location.href = `https://farmlink-ui.onrender.com/demos/admin-templates/datta-able/react/free/app/tender-spec/${tender.id}`;
                     }}
                   >
                     Details

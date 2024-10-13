@@ -40,7 +40,7 @@ const BootstrapTable = () => {
 
   // Function to handle row click
   const handleRowClick = (id) => {
-    window.location.href = `http://localhost:3000/demos/admin-templates/datta-able/react/free/app/contract-spec/${id}`;
+    window.location.href = `https://farmlink-ui.onrender.com/demos/admin-templates/datta-able/react/free/app/contract-spec/${id}`;
   };
 
   return (

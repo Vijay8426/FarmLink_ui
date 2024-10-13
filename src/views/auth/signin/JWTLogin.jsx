@@ -41,7 +41,7 @@ const JWTLogin = () => {
       localStorage.setItem('userRole', role);
   
       // Optionally, redirect the user after successful login and role fetching
-      window.location.href = 'http://localhost:3000/demos/admin-templates/datta-able/react/free/app/dashboard/default'; // Redirect to dashboard or desired page
+      window.location.href = 'https://farmlink-ui.onrender.com/demos/admin-templates/datta-able/react/free/app/dashboard/default'; // Redirect to dashboard or desired page
     } catch (error) {
       setErrors({ submit: 'Login failed. Please check your credentials and try again.' });
     } finally {
