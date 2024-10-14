@@ -78,6 +78,12 @@ const routes = [
       },
       {
         exact: 'true',
+        path: '/app/create-contract/:tender_id/:buyer_id/:farmer_id',
+        element: lazy(() => import('./views/create-contract'))
+
+      },
+      {
+        exact: 'true',
         path: '/app/view-contracts',
         element: lazy(() => import('./views/view-contracts'))
 

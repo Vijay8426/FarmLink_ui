@@ -10,9 +10,35 @@ const Tender = () => {
   const [loading, setLoading] = useState(true); // State to handle loading state
   const [error, setError] = useState(null); // State to handle error
   const [file, setFile] = useState(null); // State to store the selected file
+  const [buyerId, setBuyerId] = useState(null); // State to store the buyer ID
 
   const accessToken = localStorage.getItem('accessToken'); // Retrieve the access token
   const userRole = localStorage.getItem('userRole'); // Retrieve the user role
+
+  // Function to decode JWT and get user ID
+  const getUserIdFromToken = (token) => {
+    if (!token) return null;
+    
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+
+      const decoded = JSON.parse(jsonPayload);
+      return decoded.user_id || decoded.sub; // Adjust according to the structure of your payload
+    } catch (error) {
+      console.error("Error decoding access token", error);
+      return null;
+    }
+  };
+
+  // Fetch the buyer ID from the token
+  useEffect(() => {
+    const userId = getUserIdFromToken(accessToken);
+    setBuyerId(userId);
+  }, [accessToken]);
 
   // Fetch the tender details based on the ID
   useEffect(() => {
@@ -85,6 +111,13 @@ const Tender = () => {
       console.error("Error submitting the draft", error);
       alert('Failed to submit the draft.');
     }
+  };
+
+  // Function to handle contract creation
+  const handleCreateContract = (farmerId) => {
+    const contractUrl = `https://farmlink-ui.onrender.com/demos/admin-templates/datta-able/react/free/app/create-contract/${id}/${buyerId}/${farmerId}`;
+    window.location.href=contractUrl
+    // Redirect to the contract creation page
   };
 
   // If still loading, show a loading spinner or message
@@ -164,7 +197,9 @@ const Tender = () => {
                             <a href={`https://farmlink-ewxs.onrender.com${draft.draftfile}`}>File</a>
                           </td>
                           <td className='link-info'>Message</td>
-                          <td className='link-success'>Create a contract</td>
+                          <td className='link-success' onClick={() => handleCreateContract(draft.farmer)} style={{ cursor: 'pointer' }}>
+                            Create a contract
+                          </td>
                         </tr>
                       ))
                     ) : (
