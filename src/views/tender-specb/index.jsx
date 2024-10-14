@@ -9,9 +9,10 @@ const Tender = () => {
   const [drafts, setDrafts] = useState([]); // State to store the drafts data
   const [loading, setLoading] = useState(true); // State to handle loading state
   const [error, setError] = useState(null); // State to handle error
+  const [file, setFile] = useState(null); // State to store the selected file
 
-  // Retrieve the access token from local storage or wherever it is stored
-  const accessToken = localStorage.getItem('accessToken'); // Adjust this line if your token is stored differently
+  const accessToken = localStorage.getItem('accessToken'); // Retrieve the access token
+  const userRole = localStorage.getItem('userRole'); // Retrieve the user role
 
   // Fetch the tender details based on the ID
   useEffect(() => {
@@ -35,9 +36,9 @@ const Tender = () => {
     fetchTender();
   }, [id, accessToken]);
 
-  // Fetch the drafts based on the tender ID
+  // Fetch the drafts based on the tender ID if userRole is not 1
   useEffect(() => {
-    if (tender) {
+    if (tender && userRole === '2') {
       const fetchDrafts = async () => {
         try {
           const response = await axios.get(`https://farmlink-ewxs.onrender.com/draft/drafts/${id}/`, {
@@ -53,7 +54,38 @@ const Tender = () => {
 
       fetchDrafts();
     }
-  }, [tender, id, accessToken]);
+  }, [tender, id, accessToken, userRole]);
+
+  // Handle file change event
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
+
+  // Handle the draft submission
+  const handleSubmitDraft = async (event) => {
+    event.preventDefault();
+    if (!file) {
+      alert('Please select a file to submit.');
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('draftfile', file);
+
+      await axios.post(`https://farmlink-ewxs.onrender.com/draft/drafts/${id}/`, formData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      alert('Draft submitted successfully!');
+      setFile(null); // Reset the file input after successful submission
+    } catch (error) {
+      console.error("Error submitting the draft", error);
+      alert('Failed to submit the draft.');
+    }
+  };
 
   // If still loading, show a loading spinner or message
   if (loading) return <p>Loading...</p>;
@@ -105,70 +137,76 @@ const Tender = () => {
             </Card.Body>
           </Card>
 
-          <Card>
-            <Card.Header>
-              <Card.Title as="h5">Enrollments</Card.Title>
-            </Card.Header>
-            <Card.Body>
-              <Table responsive hover>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Vendor</th>
-                    <th>Attachment</th>
-                    <th>Negotiate</th>
-                    <th>Contract</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {drafts.length > 0 ? (
-                    drafts.map((draft, index) => (
-                      <tr key={index}>
-                        <th scope="row">{index + 1}</th>
-                        <td>{draft.farmer_name}</td>
-                        <td className='link-primary'>
-                          <a href={`https://farmlink-ewxs.onrender.com${draft.draftfile}`}>File</a>
-                        </td>
-                        <td className='link-info'>Message</td>
-                        <td className='link-success'>Create a contract</td>
-                      </tr>
-                    ))
-                  ) : (
+          {/* Conditionally render the Enrollments section for userRole 2 */}
+          {userRole === '2' && (
+            <Card>
+              <Card.Header>
+                <Card.Title as="h5">Enrollments</Card.Title>
+              </Card.Header>
+              <Card.Body>
+                <Table responsive hover>
+                  <thead>
                     <tr>
-                      <td colSpan="5">No enrollments available</td>
+                      <th>#</th>
+                      <th>Vendor</th>
+                      <th>Attachment</th>
+                      <th>Negotiate</th>
+                      <th>Contract</th>
                     </tr>
-                  )}
-                </tbody>
-              </Table>
-            </Card.Body>
-          </Card>
+                  </thead>
+                  <tbody>
+                    {drafts.length > 0 ? (
+                      drafts.map((draft, index) => (
+                        <tr key={index}>
+                          <th scope="row">{index + 1}</th>
+                          <td>{draft.farmer_name}</td>
+                          <td className='link-primary'>
+                            <a href={`https://farmlink-ewxs.onrender.com${draft.draftfile}`}>File</a>
+                          </td>
+                          <td className='link-info'>Message</td>
+                          <td className='link-success'>Create a contract</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="5">No enrollments available</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </Table>
+              </Card.Body>
+            </Card>
+          )}
 
-          <Card>
-            <Card.Header>
-              <Card.Title as="h5">Enroll</Card.Title>
-              <span className="d-block m-t-5">
-                Attach your draft (a detailed description like bid, personal info, etc.)
-              </span>
-            </Card.Header>
-            <Card.Body>
-              <Row>
-                <Col sm={12} style={{ overflowX: 'auto' }}>
-                  <Form className="d-inline-flex">
-                    <Form.Group className="d-inline-flex mx-3 align-items-center">
-                      <Form.Label className="mb-0">Email:</Form.Label>
-                      <Form.Control className="mx-2" plaintext readOnly defaultValue="email@example.com" />
-                    </Form.Group>
-                    <Form.Group className="d-inline-flex mr-5 mx-3 align-items-center">
-                      <Form.Control className="mx-4" type="file" placeholder="Password" />
-                    </Form.Group>
-                    <Form.Group className="d-inline-flex mx-3" style={{ overflow: 'unset' }}>
-                      <Button className="mb-0">Submit Draft</Button>
-                    </Form.Group>
-                  </Form>
-                </Col>
-              </Row>
-            </Card.Body>
-          </Card>
+          {/* Conditionally render the Enroll card for userRole 1 */}
+          {userRole === '1' && (
+            <Card>
+              <Card.Header>
+                <Card.Title as="h5">Enroll</Card.Title>
+                <span className="d-block m-t-5">
+                  Attach your draft (a detailed description like bid, personal info, etc.)
+                </span>
+              </Card.Header>
+              <Card.Body>
+                <Row>
+                  <Col sm={12} style={{ overflowX: 'auto' }}>
+                    <Form className="d-inline-flex" onSubmit={handleSubmitDraft}>
+                      <Form.Group className="d-inline-flex mx-3 align-items-center">
+                        <Form.Label className="mb-0">Email:</Form.Label>
+                        <Form.Control className="mx-2" plaintext readOnly defaultValue="email@example.com" />
+                      </Form.Group>
+                      <Form.Group className="d-inline-flex mr-5 mx-3 align-items-center">
+                        <Form.Control className="mx-4" type="file" onChange={handleFileChange} />
+                      </Form.Group>
+                      <Form.Group className="d-inline-flex mx-3" style={{ overflow: 'unset' }}>
+                        <Button className="mb-0" type="submit">Submit Draft</Button>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                </Row>
+              </Card.Body>
+            </Card>
+          )}
         </Col>
       </Row>
     </React.Fragment>

@@ -8,7 +8,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
-function HeaderAndFooterExample() {
+function ViewTender() {
   const cardStyle = {
     width: '550px',
     margin: '0 auto',
@@ -22,14 +22,24 @@ function HeaderAndFooterExample() {
       setLoading(true);
       try {
         const accessToken = localStorage.getItem('accessToken');
+        const userRole = localStorage.getItem('userRole'); // Get user role from localStorage
 
-        const response = await axios.get('https://farmlink-ewxs.onrender.com/tender/tender/buyer/', {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        let apiUrl = '';
+        if (userRole === '2') {
+          apiUrl = 'https://farmlink-ewxs.onrender.com/tender/tender/buyer/';
+        } else if (userRole === '1') {
+          apiUrl = 'https://farmlink-ewxs.onrender.com/tender/tenders/';
+        }
 
-        setTenders(response.data);
+        if (apiUrl) {
+          const response = await axios.get(apiUrl, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+
+          setTenders(response.data);
+        }
         setLoading(false);
       } catch (error) {
         console.error('Error fetching tenders:', error);
@@ -57,13 +67,12 @@ function HeaderAndFooterExample() {
                 <Card.Body>
                   <Card.Title>{tender.title}</Card.Title>
                   <Card.Text>
-                    {tender.description}
+                    {tender.description || 'No description available.'}
                   </Card.Text>
                   <Button
                     variant="primary"
                     onClick={() => {
-                      // Change the window location to the tender details page
-                      window.location.href = `https://farmlink-ui.onrender.com/demos/admin-templates/datta-able/react/free/app/tender-spec/${tender.id}`;
+                      window.location.href = `http://localhost:3000/demos/admin-templates/datta-able/react/free/app/tender-spec/${tender.id}`;
                     }}
                   >
                     Details
@@ -80,4 +89,4 @@ function HeaderAndFooterExample() {
   );
 }
 
-export default HeaderAndFooterExample;
+export default  ViewTender
