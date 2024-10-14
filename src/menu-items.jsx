@@ -1,3 +1,4 @@
+const userRole = localStorage.getItem('userRole');
 const menuItems = {
   items: [
     {
@@ -43,13 +44,15 @@ const menuItems = {
       type: 'group',
       icon: 'icon-group',
       children: [
-        {
-          id: 'create-tender',
-          title: 'Create Tender',
-          type: 'item',
-          icon: 'feather icon-book',
-          url: '/app/create-tender'
-        },
+        ...(userRole === '2' ? [
+          {
+            id: 'create-tender',
+            title: 'Create Tender',
+            type: 'item',
+            icon: 'feather icon-book',
+            url: '/app/create-tender'
+          }
+        ] : []),
         {
           id: 'view-tender',
           title: 'View Tender',
@@ -111,16 +114,9 @@ const menuItems = {
 
           ]
         },
-        {
-          id: 'view-tender',
-          title: 'View Tender',
-          type: 'item',
-          icon: 'feather icon-sidebar',
-          url: '/app/view-tender'
-        }
       ]
     },
-    // Rest of your menu items...
+
   ]
 };
 
