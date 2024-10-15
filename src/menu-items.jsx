@@ -76,6 +76,13 @@ const menuItems = {
           url: '/app/profile'
         },
         {
+          id: 'chat',
+          title: 'Chat',
+          type: 'item',
+          icon: 'feather icon-mail',
+          url: '/app/chat'
+        },
+        {
           id: 'auth',
           title: 'Authentication',
           type: 'collapse',
