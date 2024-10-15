@@ -108,47 +108,62 @@ const ContractSpec = () => {
       <Row>
         <Col>
           <Card>
-            <Card.Header>
-              <Card.Title as="h5">{contract.title}</Card.Title>
+          <Card.Header className="d-flex justify-content-between align-items-center">
+              <Card.Title as="h5" className="mb-0">{contract.title}</Card.Title>
+
             </Card.Header>
             <Card.Body>
-              <Table>
-                <tbody>
-                  <tr>
-                    <th>Effective Date</th>
-                    <td>{tender.open_time ? formatDate(tender.open_time) : 'N/A'}</td>
-                  </tr>
-                  <tr>
-                    <th>Expiration Date</th>
-                    <td>{tender.close_time ? formatDate(tender.close_time) : 'N/A'}</td>
-                  </tr>
-                  <tr>
-                    <th>Attachment</th>
-                    <td>
-                      {fileLink ? (
-                        <a href={fileLink} target="_blank" rel="noopener noreferrer" className="link-primary">
-                          Contract File
-                        </a>
-                      ) : (
-                        'N/A'
-                      )}
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Status</th>
-                    <td>{contract.status}</td>
-                  </tr>
-                  <tr>
-                    <th>Payment Status</th>
-                    <td>{contract.payment_status}</td>
-                  </tr>
-                  <tr>
-                  <th>Invoice File</th>
-                  <td><a href={`https://farmlink-ewxs.onrender.com${invoice.invoice_file}`} className='text-success'>Invoice</a></td>
-                  </tr>
-                </tbody>
-              </Table>
-            </Card.Body>
+  <Table>
+    <tbody>
+      <tr>
+        <th>Effective Date</th>
+        <td>{tender.open_time ? formatDate(tender.open_time) : 'N/A'}</td>
+      </tr>
+      <tr>
+        <th>Expiration Date</th>
+        <td>{tender.close_time ? formatDate(tender.close_time) : 'N/A'}</td>
+      </tr>
+      <tr>
+        <th>Attachment</th>
+        <td>
+          {fileLink ? (
+            <a href={fileLink} target="_blank" rel="noopener noreferrer" className="link-primary">
+              Contract File
+            </a>
+          ) : (
+            'N/A'
+          )}
+        </td>
+      </tr>
+      <tr>
+        <th>Status</th>
+        <td>{contract.status}</td>
+      </tr>
+      <tr>
+        <th>Payment Status</th>
+        <td>{contract.payment_status}</td>
+      </tr>
+      {role === '2' && (
+        <tr>
+          <th>Invoice File</th>
+          <td>
+            <a href={`https://farmlink-ewxs.onrender.com${invoice.invoice_file}`} className="text-success">
+              Invoice
+            </a>
+          </td>
+        </tr>
+      )}
+      <tr>
+        <td colSpan="2">
+          <div className="d-flex justify-content-center mt-2">
+            <button className="btn btn-success btn-md w-25">Confirm Delivery</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </Table>
+</Card.Body>
+
           </Card>
 
           {/* Farmer Details */}
