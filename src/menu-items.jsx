@@ -23,19 +23,36 @@ const menuItems = {
       icon: 'icon-group',
       children: [
         {
-          id: 'contract-requests',
-          title: 'Contract Requests',
-          type: 'item',
-          icon: 'feather icon-file-text',
-          url: '/app/contract-req'
-        },
-        {
           id: 'view-contracts',
           title: 'Contracts Signed',
           type: 'item',
           icon: 'feather icon-box',
           url: '/app/view-contracts'
-        }
+        },
+        ...(userRole === '2' 
+          ? [
+              {
+                id: 'contract-response',
+                title: 'Contract Response',
+                type: 'item',
+                icon: 'feather icon-check-square',
+                url: '/app/contract-res'
+              }
+          ]
+          : [
+
+            ]),
+            ...(userRole === '1' ?
+              [
+                {
+                  id: 'contract-requests',
+                  title: 'Contract Requests',
+                  type: 'item',
+                  icon: 'feather icon-file-text',
+                  url: '/app/contract-req'
+                }
+              ]:[]
+            )
       ]
     },
     {
@@ -108,22 +125,18 @@ const menuItems = {
               }
             ]),
             // Always include Sign Out
-           
             {
               id: 'signin',
               title: 'Sign Out',
               type: 'item',
               icon: 'feather icon-log-out',
               url: '/auth/signin-1',
-              breadcrumbs:false, // This can be changed based on your routing
-
+              breadcrumbs: false // This can be changed based on your routing
             }
-
           ]
         },
       ]
     },
-
   ]
 };
 

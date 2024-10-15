@@ -3,47 +3,39 @@ import { Row, Col, Alert, Button } from 'react-bootstrap';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 
 const JWTLogin = () => {
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   const handleLogin = async (values, { setSubmitting, setErrors }) => {
     try {
-      // First API call to authenticate and get JWT tokens
+      // First API call to authenticate and get JWT tokens and role
       const authResponse = await axios.post('https://farmlink-ewxs.onrender.com/user/login/', {
         email: values.email,
         password: values.password,
       });
-
+  
       // Debugging: Check the entire response
       console.log('Auth Response:', authResponse.data);
-
-      // Destructure the tokens and user information
+  
+      // Destructure the tokens, user information, and role from the response
       const { access, refresh } = authResponse.data.token;
       const user = authResponse.data.username; // Ensure this is extracting the user correctly
+      const userRole = authResponse.data.role; // Extract the role directly from the response
       const msg = authResponse.data.msg;
-
-      // Store tokens and user in local storage
+  
+      // Store tokens, user, and role in local storage
       localStorage.setItem('accessToken', access);
       localStorage.setItem('refreshToken', refresh);
-      localStorage.setItem('user', user); // Make sure this is defined
-
+      localStorage.setItem('user', user);
+      localStorage.setItem('userRole', userRole); // Store the user role
+  
       // Optional: Display login success message
       console.log(msg); // "Login Success"
-
-      // Second API call to get the user's role
-      const roleResponse = await axios.get('https://farmlinkbc.onrender.com/role', {
-        headers: {
-          Authorization: `Bearer ${access}`, // Send JWT as header
-        },
-      });
-
-      const { role } = roleResponse.data;
-      // Store role in local storage
-      localStorage.setItem('userRole', role);
-
-      // Use React Router to navigate after successful login and role fetching
+  
+      // Reload the page and then navigate after successful login
+       // Reload the page
       navigate('/app/dashboard/default'); // Redirect to dashboard or desired page
     } catch (error) {
       setErrors({ submit: 'Login failed. Please check your credentials and try again.' });
@@ -51,6 +43,7 @@ const JWTLogin = () => {
       setSubmitting(false);
     }
   };
+  
 
   return (
     <Formik

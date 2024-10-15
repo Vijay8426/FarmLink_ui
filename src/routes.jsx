@@ -66,6 +66,12 @@ const routes = [
       },
       {
         exact: 'true',
+        path: '/app/contract-res',
+        element: lazy(() => import('./views/contract-res'))
+
+      },
+      {
+        exact: 'true',
         path: '/app/create-tender',
         element: lazy(() => import('./views/create-tender'))
 
@@ -116,6 +122,24 @@ const routes = [
         exact: 'true',
         path: '/app/req-details/:id',
         element: lazy(() => import('./views/req-details'))
+
+      },
+      {
+        exact: 'true',
+        path: '/app/res-details/:id',
+        element: lazy(() => import('./views/res-details'))
+
+      },
+      {
+        exact: 'true',
+        path: '/app/payment-success/:id',
+        element: lazy(() => import('./views/payment-success'))
+
+      },
+      {
+        exact: 'true',
+        path: '/app/payment-failure/:id',
+        element: lazy(() => import('./views/payment-failure'))
 
       },
       {
