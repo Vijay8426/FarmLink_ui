@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Row, Col, Card, Table } from 'react-bootstrap';
+import { Row, Col, Card, Table, Modal, Button } from 'react-bootstrap';
 import axios from 'axios';
 
 // Utility function to format dates using native JavaScript
@@ -15,7 +15,8 @@ const ContractSpec = () => {
   const { id } = useParams();  // Get the contract ID from URL params
   const [contractDetails, setContractDetails] = useState(null);
   const [fileLink, setFileLink] = useState('');  // State to store the file link
-  const [isAccepted, setIsAccepted] = useState(false);  // State to track acceptance status
+  const [showPopup, setShowPopup] = useState(false);  // State to show/hide redirection popup
+  const [redirectTimeout, setRedirectTimeout] = useState(null);  // To track the timeout
 
   // Fetch contract details and file link
   useEffect(() => {
@@ -46,21 +47,22 @@ const ContractSpec = () => {
         setFileLink(fileResponse.data.fileLink);  // Set the file link in state
       } catch (error) {
         console.error('Error fetching contract details or file link:', error);
+        alert('Failed to fetch contract details. Please try again later.');
       }
     };
 
     fetchContractDetails();
   }, [id]);
 
-  // Handle the Accept button click
-  const handleAccept = async () => {
+  // Handle the Pay for Contract button click
+  const handlePayForContract = async () => {
     try {
       const accessToken = localStorage.getItem('accessToken'); // Fetch accessToken from local storage
 
-      // API call to accept the contract (using PUT)
-      await axios.put(
-        `https://farmlink-ewxs.onrender.com/farmer/contract_req/${id}/`,
-        { farmeragreed: true }, // Sending the farmeragreed field as true
+      // API call to get the payment link
+      const paymentResponse = await axios.post(
+        `https://farmlink-ewxs.onrender.com/payment/buyer/${id}/`,
+        {}, // Empty body
         {
           headers: {
             Authorization: `Bearer ${accessToken}` // Add accessToken to the headers
@@ -68,18 +70,31 @@ const ContractSpec = () => {
         }
       );
 
-      // Set acceptance status to true, causing the component to vanish
-      setIsAccepted(true);
-      alert('Contract accepted successfully!');
+      const paymentLink = paymentResponse.data.url;
+
+      // Show the redirection popup
+      setShowPopup(true);
+
+
+      // Redirect after 2 seconds
+      const timeoutId = setTimeout(() => {
+       window.location.href=paymentLink
+      }, 2000);
+      setRedirectTimeout(timeoutId); // Save timeout ID to clear if necessary
     } catch (error) {
-      console.error('Error accepting contract:', error);
-      alert('Failed to accept the contract.');
+      console.error('Error during payment:', error);
+      alert('Failed to initiate payment.');
     }
   };
 
-  if (isAccepted) {
-    return null; // Render nothing if the contract has been accepted
-  }
+  // Clear timeout if modal is closed
+  const handleCloseModal = () => {
+    setShowPopup(false);
+    if (redirectTimeout) {
+      clearTimeout(redirectTimeout); // Clear the timeout if modal is closed
+      setRedirectTimeout(null); // Reset the timeout state
+    }
+  };
 
   if (!contractDetails) {
     return <p>Loading contract details...</p>;
@@ -98,8 +113,7 @@ const ContractSpec = () => {
             <Card.Header className="d-flex justify-content-between align-items-center">
               <Card.Title as="h5" className="mb-0">{contract.title}</Card.Title>
               <div className="d-flex flex-column flex-sm-row mt-2 mt-sm-0 gap-2">
-                <button className="btn btn-success btn-md" onClick={handleAccept}>Pay for Contract</button>
-
+                <button className="btn btn-success btn-md" onClick={handlePayForContract}>Pay for Contract</button>
               </div>
             </Card.Header>
 
@@ -108,11 +122,11 @@ const ContractSpec = () => {
                 <tbody>
                   <tr>
                     <th>Effective Date</th>
-                    <td>{tender.open_time ? formatDate(tender.open_time) : 'N/A'}</td>
+                    <td>{tender?.open_time ? formatDate(tender.open_time) : 'N/A'}</td>
                   </tr>
                   <tr>
                     <th>Expiration Date</th>
-                    <td>{tender.close_time ? formatDate(tender.close_time) : 'N/A'}</td>
+                    <td>{tender?.close_time ? formatDate(tender.close_time) : 'N/A'}</td>
                   </tr>
                   <tr>
                     <th>Attachment</th>
@@ -194,6 +208,13 @@ const ContractSpec = () => {
           </Card>
         </Col>
       </Row>
+
+      {/* Modal or Popup for Redirection */}
+      <Modal show={showPopup} onHide={handleCloseModal} centered>
+        <Modal.Body>
+          <p>Redirecting to the payment page...</p>
+        </Modal.Body>
+      </Modal>
     </React.Fragment>
   );
 };
