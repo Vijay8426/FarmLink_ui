@@ -108,6 +108,12 @@ const routes = [
       },
       {
         exact: 'true',
+        path: '/app/chat',
+        element: lazy(() => import('./views/chat'))
+
+      },
+      {
+        exact: 'true',
         path: '/basic/button',
         element: lazy(() => import('./views/ui-elements/basic/BasicButton'))
       },
