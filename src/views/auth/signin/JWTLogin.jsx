@@ -3,8 +3,11 @@ import { Row, Col, Alert, Button } from 'react-bootstrap';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const JWTLogin = () => {
+  const navigate = useNavigate(); // Initialize useNavigate
+
   const handleLogin = async (values, { setSubmitting, setErrors }) => {
     try {
       // First API call to authenticate and get JWT tokens
@@ -12,43 +15,42 @@ const JWTLogin = () => {
         email: values.email,
         password: values.password,
       });
-  
+
       // Debugging: Check the entire response
       console.log('Auth Response:', authResponse.data);
-  
+
       // Destructure the tokens and user information
       const { access, refresh } = authResponse.data.token;
       const user = authResponse.data.username; // Ensure this is extracting the user correctly
       const msg = authResponse.data.msg;
-  
+
       // Store tokens and user in local storage
       localStorage.setItem('accessToken', access);
       localStorage.setItem('refreshToken', refresh);
       localStorage.setItem('user', user); // Make sure this is defined
-  
+
       // Optional: Display login success message
       console.log(msg); // "Login Success"
-  
+
       // Second API call to get the user's role
       const roleResponse = await axios.get('https://farmlinkbc.onrender.com/role', {
         headers: {
           Authorization: `Bearer ${access}`, // Send JWT as header
         },
       });
-  
+
       const { role } = roleResponse.data;
       // Store role in local storage
       localStorage.setItem('userRole', role);
-  
-      // Optionally, redirect the user after successful login and role fetching
-      window.location.href = 'http://localhost:3000/demos/admin-templates/datta-able/react/free/app/dashboard/default'; // Redirect to dashboard or desired page
+
+      // Use React Router to navigate after successful login and role fetching
+      navigate('/app/dashboard/default'); // Redirect to dashboard or desired page
     } catch (error) {
       setErrors({ submit: 'Login failed. Please check your credentials and try again.' });
     } finally {
       setSubmitting(false);
     }
   };
-  
 
   return (
     <Formik

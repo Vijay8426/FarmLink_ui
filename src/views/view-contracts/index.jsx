@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Table } from 'react-bootstrap';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const BootstrapTable = () => {
+  const navigate = useNavigate(); // Initialize useNavigate
   const [contracts, setContracts] = useState([]);
   const [signedContracts, setSignedContracts] = useState([]);
   const [pendingContracts, setPendingContracts] = useState([]);
@@ -40,7 +42,7 @@ const BootstrapTable = () => {
 
   // Function to handle row click
   const handleRowClick = (id) => {
-    window.location.href = `https://farmlink-ui.onrender.com/demos/admin-templates/datta-able/react/free/app/contract-spec/${id}`;
+    navigate(`/app/contract-spec/${id}`); // Use navigate to redirect
   };
 
   return (

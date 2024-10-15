@@ -1,106 +1,68 @@
-import React from 'react';
-import { Row, Col, Card, Table, Tabs, Tab } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-
-import avatar1 from '../../assets/images/user/avatar-1.jpg';
-import avatar2 from '../../assets/images/user/avatar-2.jpg';
-import avatar3 from '../../assets/images/user/avatar-3.jpg';
-
-
+import React, { useEffect, useState } from 'react';
+import { Row, Col, Card, Table } from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
 
 const DashDefault = () => {
-  const tabContent = (
-    <React.Fragment>
-      <div className="d-flex friendlist-box align-items-center justify-content-center m-b-20">
-        <div className="m-r-10 photo-table flex-shrink-0">
-          <Link to="#">
-            <img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" />
-          </Link>
-        </div>
-        <div className="flex-grow-1 ms-3">
-          <h6 className="m-0 d-inline">Silje Larsen</h6>
-          <span className="float-end d-flex  align-items-center">
-            <i className="fa fa-caret-up f-22 m-r-10 text-c-green" />
-            3784
-          </span>
-        </div>
+  const [contracts, setContracts] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchContracts = async () => {
+      try {
+        // Retrieve access token from local storage
+        const accessToken = localStorage.getItem('accessToken');
+        
+        // Fetch contract data from the API
+        const response = await fetch('https://farmlink-ewxs.onrender.com/farmer/contract_req/', {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        const result = await response.json();
+
+        // Extract the contract data from the response
+        const contractData = result.data[0]; // Assuming the contracts are in the first array of "data"
+        setContracts(contractData);
+      } catch (error) {
+        console.error('Error fetching contracts:', error);
+      }
+    };
+
+    fetchContracts();
+  }, []);
+
+  // Function to generate an avatar based on the first letter of the buyer's name
+  const getAvatar = (buyerName) => {
+    const initial = buyerName ? buyerName.charAt(0).toUpperCase() : '?';
+    return (
+      <div
+        style={{
+          width: '40px',
+          height: '40px',
+          borderRadius: '50%',
+          backgroundColor: '#007bff',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#fff',
+          fontWeight: 'bold',
+          fontSize: '18px',
+        }}
+      >
+        {initial}
       </div>
-      <div className="d-flex friendlist-box align-items-center justify-content-center m-b-20">
-        <div className="m-r-10 photo-table flex-shrink-0">
-          <Link to="#">
-            <img className="rounded-circle" style={{ width: '40px' }} src={avatar2} alt="activity-user" />
-          </Link>
-        </div>
-        <div className="flex-grow-1 ms-3">
-          <h6 className="m-0 d-inline">Julie Vad</h6>
-          <span className="float-end d-flex  align-items-center">
-            <i className="fa fa-caret-up f-22 m-r-10 text-c-green" />
-            3544
-          </span>
-        </div>
-      </div>
-      <div className="d-flex friendlist-box align-items-center justify-content-center m-b-20">
-        <div className="m-r-10 photo-table flex-shrink-0">
-          <Link to="#">
-            <img className="rounded-circle" style={{ width: '40px' }} src={avatar3} alt="activity-user" />
-          </Link>
-        </div>
-        <div className="flex-grow-1 ms-3">
-          <h6 className="m-0 d-inline">Storm Hanse</h6>
-          <span className="float-end d-flex  align-items-center">
-            <i className="fa fa-caret-down f-22 m-r-10 text-c-red" />
-            2739
-          </span>
-        </div>
-      </div>
-      <div className="d-flex friendlist-box align-items-center justify-content-center m-b-20">
-        <div className="m-r-10 photo-table flex-shrink-0">
-          <Link to="#">
-            <img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" />
-          </Link>
-        </div>
-        <div className="flex-grow-1 ms-3">
-          <h6 className="m-0 d-inline">Frida Thomse</h6>
-          <span className="float-end d-flex  align-items-center">
-            <i className="fa fa-caret-down f-22 m-r-10 text-c-red" />
-            1032
-          </span>
-        </div>
-      </div>
-      <div className="d-flex friendlist-box align-items-center justify-content-center m-b-20">
-        <div className="m-r-10 photo-table flex-shrink-0">
-          <Link to="#">
-            <img className="rounded-circle" style={{ width: '40px' }} src={avatar2} alt="activity-user" />
-          </Link>
-        </div>
-        <div className="flex-grow-1 ms-3">
-          <h6 className="m-0 d-inline">Silje Larsen</h6>
-          <span className="float-end d-flex  align-items-center">
-            <i className="fa fa-caret-up f-22 m-r-10 text-c-green" />
-            8750
-          </span>
-        </div>
-      </div>
-      <div className="d-flex friendlist-box align-items-center justify-content-center">
-        <div className="m-r-10 photo-table flex-shrink-0">
-          <Link to="#">
-            <img className="rounded-circle" style={{ width: '40px' }} src={avatar3} alt="activity-user" />
-          </Link>
-        </div>
-        <div className="flex-grow-1 ms-3">
-          <h6 className="m-0 d-inline">Storm Hanse</h6>
-          <span className="float-end d-flex  align-items-center">
-            <i className="fa fa-caret-down f-22 m-r-10 text-c-red" />
-            8750
-          </span>
-        </div>
-      </div>
-    </React.Fragment>
-  );
+    );
+  };
+
+  // Function to handle navigation to the details page
+  const handleDetailsClick = (id) => {
+    navigate(`/app/req-details/${id}`);
+  };
+
   return (
     <React.Fragment>
       <Row>
-
         <Col md={6} xl={12}>
           <Card className="Recent-Users widget-focus-lg">
             <Card.Header>
@@ -109,130 +71,33 @@ const DashDefault = () => {
             <Card.Body className="px-0 py-2">
               <Table responsive hover className="recent-users">
                 <tbody>
-                  <tr className="unread">
-                    <td>
-                      <img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" />
-                    </td>
-                    <td>
-                      <h6 className="mb-1">Isabella Christensen</h6>
-                      <p className="m-0">Lorem Ipsum is simply dummy text of…</p>
-                    </td>
-                    <td>
-                      <h6 className="text-muted">
-                        <i className="fa fa-circle text-c-green f-10 m-r-15" />
-                        11 MAY 12:56
-                      </h6>
-                    </td>
-                    <td>
-                      <Link to="#" className="label theme-bg2 text-white f-12">
-                        Reject
-                      </Link>
-                      <Link to="#" className="label theme-bg text-white f-12">
-                        Approve
-                      </Link>
-                    </td>
-                  </tr>
-                  <tr className="unread">
-                    <td>
-                      <img className="rounded-circle" style={{ width: '40px' }} src={avatar2} alt="activity-user" />
-                    </td>
-                    <td>
-                      <h6 className="mb-1">Mathilde Andersen</h6>
-                      <p className="m-0">Lorem Ipsum is simply dummy text of…</p>
-                    </td>
-                    <td>
-                      <h6 className="text-muted">
-                        <i className="fa fa-circle text-c-red f-10 m-r-15" />
-                        11 MAY 10:35
-                      </h6>
-                    </td>
-                    <td>
-                      <Link to="#" className="label theme-bg2 text-white f-12">
-                        Reject
-                      </Link>
-                      <Link to="#" className="label theme-bg text-white f-12">
-                        Approve
-                      </Link>
-                    </td>
-                  </tr>
-                  <tr className="unread">
-                    <td>
-                      <img className="rounded-circle" style={{ width: '40px' }} src={avatar3} alt="activity-user" />
-                    </td>
-                    <td>
-                      <h6 className="mb-1">Karla Sorensen</h6>
-                      <p className="m-0">Lorem Ipsum is simply dummy text of…</p>
-                    </td>
-                    <td>
-                      <h6 className="text-muted">
-                        <i className="fa fa-circle text-c-green f-10 m-r-15" />9 MAY 17:38
-                      </h6>
-                    </td>
-                    <td>
-                      <Link to="#" className="label theme-bg2 text-white f-12">
-                        Reject
-                      </Link>
-                      <Link to="#" className="label theme-bg text-white f-12">
-                        Approve
-                      </Link>
-                    </td>
-                  </tr>
-                  <tr className="unread">
-                    <td>
-                      <img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" />
-                    </td>
-                    <td>
-                      <h6 className="mb-1">Ida Jorgensen</h6>
-                      <p className="m-0">Lorem Ipsum is simply dummy text of…</p>
-                    </td>
-                    <td>
-                      <h6 className="text-muted f-w-300">
-                        <i className="fa fa-circle text-c-red f-10 m-r-15" />
-                        19 MAY 12:56
-                      </h6>
-                    </td>
-                    <td>
-                      <Link to="#" className="label theme-bg2 text-white f-12">
-                        Reject
-                      </Link>
-                      <Link to="#" className="label theme-bg text-white f-12">
-                        Approve
-                      </Link>
-                    </td>
-                  </tr>
-                  <tr className="unread">
-                    <td>
-                      <img className="rounded-circle" style={{ width: '40px' }} src={avatar2} alt="activity-user" />
-                    </td>
-                    <td>
-                      <h6 className="mb-1">Albert Andersen</h6>
-                      <p className="m-0">Lorem Ipsum is simply dummy text of…</p>
-                    </td>
-                    <td>
-                      <h6 className="text-muted">
-                        <i className="fa fa-circle text-c-green f-10 m-r-15" />
-                        21 July 12:56
-                      </h6>
-                    </td>
-                    <td>
-                      <Link to="#" className="label theme-bg2 text-white f-12">
-                        Reject
-                      </Link>
-                      <Link to="#" className="label theme-bg text-white f-12">
-                        Approve
-                      </Link>
-                    </td>
-                  </tr>
+                  {contracts.map((contract) => (
+                    <tr key={contract.id} className="unread">
+                      <td>{getAvatar(contract.buyer_name)}</td>
+                      <td>
+                        <h6 className="mb-1">{contract.buyer_name}</h6>
+                      </td>
+                      <td>
+                        <h6 className="text-muted">
+                          <i className="fa fa-circle text-c-green f-10 m-r-15" />
+                          {contract.title}
+                        </h6>
+                      </td>
+                      <td>
+                        <button
+                          onClick={() => handleDetailsClick(contract.id)}
+                          className="btn btn-primary btn-sm"
+                        >
+                          Details
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </Table>
             </Card.Body>
           </Card>
         </Col>
-
-
-
-
-{}
       </Row>
     </React.Fragment>
   );

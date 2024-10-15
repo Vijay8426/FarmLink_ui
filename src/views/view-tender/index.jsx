@@ -7,6 +7,7 @@ import Col from 'react-bootstrap/Col';
 import Spinner from 'react-bootstrap/Spinner';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 function ViewTender() {
   const cardStyle = {
@@ -16,6 +17,7 @@ function ViewTender() {
 
   const [tenders, setTenders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     const fetchTenders = async () => {
@@ -72,7 +74,7 @@ function ViewTender() {
                   <Button
                     variant="primary"
                     onClick={() => {
-                      window.location.href = `https://farmlink-ui.onrender.com/demos/admin-templates/datta-able/react/free/app/tender-spec/${tender.id}`;
+                      navigate(`/app/tender-spec/${tender.id}`); // Use navigate instead of window.location.href
                     }}
                   >
                     Details
@@ -89,4 +91,4 @@ function ViewTender() {
   );
 }
 
-export default  ViewTender
+export default ViewTender;
