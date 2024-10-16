@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Alert, Button } from 'react-bootstrap';
+import { Row, Col, Alert, Button, Card } from 'react-bootstrap';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import axios from 'axios';
@@ -15,41 +15,39 @@ const JWTLogin = () => {
         email: values.email,
         password: values.password,
       });
-  
+
       // Debugging: Check the entire response
       console.log('Auth Response:', authResponse.data);
-  
+
       // Destructure the tokens, user information, and role from the response
       const { access, refresh } = authResponse.data.token;
       const user = authResponse.data.username; // Ensure this is extracting the user correctly
       const userRole = authResponse.data.role; // Extract the role directly from the response
       const msg = authResponse.data.msg;
-  
+
       // Store tokens, user, and role in local storage
       localStorage.setItem('accessToken', access);
       localStorage.setItem('refreshToken', refresh);
       localStorage.setItem('user', user);
       localStorage.setItem('userRole', userRole); // Store the user role
-  
+
       // Optional: Display login success message
       console.log(msg); // "Login Success"
-  
-      // Reload the page and then navigate after successful login
-       // Reload the page
-      navigate('/app/dashboard/default'); // Redirect to dashboard or desired page
+
+      // Redirect to dashboard or desired page
+      navigate('/app/dashboard/default'); 
     } catch (error) {
       setErrors({ submit: 'Login failed. Please check your credentials and try again.' });
     } finally {
       setSubmitting(false);
     }
   };
-  
 
   return (
     <Formik
       initialValues={{
-        email: 'farmlink@gmail.com',
-        password: '123456',
+        email: '',  // Hardcoded credentials for showcase
+        password: '',  // Hardcoded credentials for showcase
         submit: null
       }}
       validationSchema={Yup.object().shape({
@@ -69,6 +67,7 @@ const JWTLogin = () => {
               onChange={handleChange}
               type="email"
               value={values.email}
+              placeholder='email'
             />
             {touched.email && errors.email && <small className="text-danger form-text">{errors.email}</small>}
           </div>
@@ -81,6 +80,7 @@ const JWTLogin = () => {
               onChange={handleChange}
               type="password"
               value={values.password}
+              placeholder='password'
             />
             {touched.password && errors.password && <small className="text-danger form-text">{errors.password}</small>}
           </div>
@@ -112,6 +112,28 @@ const JWTLogin = () => {
               </Button>
             </Col>
           </Row>
+
+          {/* Card to display the credentials */}
+          <Card className="mt-4">
+            <Card.Body>
+              <Card.Title>Demo Credentials for Buyer</Card.Title>
+              <Card.Text>
+                <strong>Email:</strong> magnus12@example.com
+                <br />
+                <strong>Password:</strong> magnus1234
+              </Card.Text>
+            </Card.Body>
+          </Card>
+          <Card className="mt-4">
+            <Card.Body>
+              <Card.Title>Demo Credentials for Farmer</Card.Title>
+              <Card.Text>
+                <strong>Email:</strong> vinodhkanna@gmail.com
+                <br />
+                <strong>Password:</strong> ishu@vkhome
+              </Card.Text>
+            </Card.Body>
+          </Card>
         </form>
       )}
     </Formik>
