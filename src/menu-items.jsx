@@ -80,6 +80,20 @@ const menuItems = {
       ]
     },
     {
+      id: 'Payment',
+      title: 'Transactions',
+      type: 'group',
+      icon: 'icon-group',
+      children: [
+        {
+          id: 'Payment-farmer',
+          title: 'Payments',
+          type: 'item',
+          icon: 'feather icon-credit-card',
+          url: '/app/payment-list'
+        }
+  ]},
+    {
       id: 'Profile',
       title: 'Info',
       type: 'group',

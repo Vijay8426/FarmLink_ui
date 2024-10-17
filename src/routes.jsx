@@ -144,6 +144,18 @@ const routes = [
       },
       {
         exact: 'true',
+        path: '/app/payment-form/:id',
+        element: lazy(() => import('./views/payment-form'))
+
+      },
+      {
+        exact: 'true',
+        path: '/app/payment-list',
+        element: lazy(() => import('./views/pay-list'))
+
+      },
+      {
+        exact: 'true',
         path: '/basic/button',
         element: lazy(() => import('./views/ui-elements/basic/BasicButton'))
       },
