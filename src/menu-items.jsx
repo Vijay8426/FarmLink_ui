@@ -79,7 +79,8 @@ const menuItems = {
         }
       ]
     },
-    {
+
+    ...(userRole==='1'?[{
       id: 'Payment',
       title: 'Transactions',
       type: 'group',
@@ -92,7 +93,7 @@ const menuItems = {
           icon: 'feather icon-credit-card',
           url: '/app/payment-list'
         }
-  ]},
+  ]}]:[]),
     {
       id: 'Profile',
       title: 'Info',
